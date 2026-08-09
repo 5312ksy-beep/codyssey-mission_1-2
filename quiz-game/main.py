@@ -84,6 +84,24 @@ class QuizGame:
         print("5. 종료")
         print("=" * 40)
 
+    def show_quiz_list(self):
+        """저장된 퀴즈 목록을 보여주는 기능"""
+        print(f"\n📋 등록된 퀴즈 목록 (총 {len(self.quizzes)}개)\n")
+        print("-" * 40)
+        if not self.quizzes:
+            print("등록된 퀴즈가 없습니다.")
+        else:
+            for i, quiz in enumerate(self.quizzes, 1):
+                print(f"[{i}] {quiz.question}")
+        print("-" * 40)
+
+    def show_best_score(self):
+        """최고 점수를 보여주는 기능"""
+        # 아직 퀴즈 풀기 로직이 없으므로 기본값(0점)이 출력됩니다.
+        print(f"\n🏆 최고 점수: {self.best_score}점")
+        if self.best_score == 0:
+            print("아직 퀴즈를 풀지 않으셨군요! 첫 도전을 시작해 보세요.")    
+
     def run(self):
         """게임의 전체 흐름을 제어하는 메인 루프"""
         while True:
@@ -106,9 +124,9 @@ class QuizGame:
                 elif choice == 2:
                     print("\n[알림] 퀴즈 추가 기능은 다음 단계에서 구현합니다!")
                 elif choice == 3:
-                    print("\n[알림] 퀴즈 목록 기능은 다음 단계에서 구현합니다!")
+                    self.show_quiz_list()
                 elif choice == 4:
-                    print("\n[알림] 점수 확인 기능은 다음 단계에서 구현합니다!")
+                    self.show_best_score()
                 elif choice == 5:
                     print("\n게임을 종료합니다. 안녕히 가세요!")
                     break
