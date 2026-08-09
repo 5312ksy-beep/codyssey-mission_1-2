@@ -63,6 +63,7 @@ default_quizzes = [
 
 
 import sys # 맨 윗줄에 추가 (종료 처리를 위해 필요)
+import json
 
 # ... (앞서 작성한 Quiz 클래스와 default_quizzes 코드는 그대로 둡니다) ...
 
@@ -70,7 +71,7 @@ class QuizGame:
     def __init__(self, quizzes):
         self.quizzes = quizzes  # 퀴즈 목록 데이터
         self.best_score = 0     # 최고 점수 초기화
-
+        self.load_data()        # 객체가 생성될 때 가장 먼저 파일을 읽어옴
 
     def display_menu(self):
         """메뉴 출력 메서드"""
@@ -101,6 +102,35 @@ class QuizGame:
         print(f"\n🏆 최고 점수: {self.best_score}점")
         if self.best_score == 0:
             print("아직 퀴즈를 풀지 않으셨군요! 첫 도전을 시작해 보세요.")    
+
+    def save_data(self):
+        """퀴즈 데이터와 최고 점수를 JSON 파일에 저장"""
+        data = {
+            "quizzes": [quiz.to_dict() for quiz in self.quizzes],
+            "best_score": self.best_score
+        }
+        try:
+            with open("state.json", "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=4)
+        except Exception as e:
+            print(f"\n⚠️ 데이터 저장 중 오류가 발생했습니다: {e}")
+
+    def load_data(self):
+        """JSON 파일에서 데이터를 불러오기"""
+        try:
+            with open("state.json", "r", encoding="utf-8") as f:
+                data = json.load(f)
+                self.quizzes = [Quiz.from_dict(q) for q in data.get("quizzes", [])]
+                self.best_score = data.get("best_score", 0)
+            print("📂 저장된 데이터를 성공적으로 불러왔습니다.")
+            
+        except FileNotFoundError:
+            print("📂 첫 실행입니다. 기본 퀴즈 데이터로 시작합니다.")
+        except Exception as e:
+            print(f"\n⚠️ 데이터 파일이 손상되었습니다. ({e})")
+            print("기본 퀴즈 데이터로 복구하여 시작합니다.")
+
+
 
     def add_quiz(self):
         """새로운 퀴즈를 입력받아 리스트에 추가하는 기능"""
@@ -144,6 +174,7 @@ class QuizGame:
         new_quiz = Quiz(question, choices, answer)
         self.quizzes.append(new_quiz)
         print("\n✅ 퀴즈가 성공적으로 추가되었습니다!")
+        self.save_data()
 
     def play_quiz(self):
         """저장된 퀴즈를 순서대로 풀고 점수를 계산하는 기능"""
@@ -192,7 +223,8 @@ class QuizGame:
         if score_percentage > self.best_score:
             print("🎉 새로운 최고 점수입니다!")
             self.best_score = score_percentage
-        print("=" * 40)    
+        print("=" * 40) 
+        self.save_data()   
 
     def run(self):
         """게임의 전체 흐름을 제어하는 메인 루프"""
@@ -221,6 +253,7 @@ class QuizGame:
                     self.show_best_score()
                 elif choice == 5:
                     print("\n게임을 종료합니다. 안녕히 가세요!")
+                    self.save_data() # 종료 전 저장
                     break
                 else:
                     print("⚠️ 잘못된 입력입니다. 1-5 사이의 숫자를 입력하세요.")
@@ -232,7 +265,7 @@ class QuizGame:
             except (KeyboardInterrupt, EOFError):
                 # 평가 기준 충족: Ctrl+C 등으로 강제 종료 시도 시 튕기지 않고 안전하게 처리
                 print("\n\n⚠️ 비정상 종료가 감지되었습니다. 데이터를 안전하게 저장하고 종료합니다.")
-                # (추후 여기에 state.json 저장 메서드를 호출할 예정입니다)
+                self.save_data() # 강제 종료 방어 시에도 데이터 저장
                 break
 
 
