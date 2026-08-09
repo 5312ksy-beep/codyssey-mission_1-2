@@ -102,6 +102,49 @@ class QuizGame:
         if self.best_score == 0:
             print("아직 퀴즈를 풀지 않으셨군요! 첫 도전을 시작해 보세요.")    
 
+    def add_quiz(self):
+        """새로운 퀴즈를 입력받아 리스트에 추가하는 기능"""
+        print("\n📌 새로운 퀴즈를 추가합니다.")
+        
+        # 1. 문제 입력 받기 (빈 텍스트 방어)
+        while True:
+            question = input("문제를 입력하세요: ").strip()
+            if not question:
+                print("⚠️ 빈 입력입니다. 문제 내용을 입력해 주세요.")
+                continue
+            break
+            
+        # 2. 선택지 4개 입력 받기 (빈 텍스트 방어)
+        choices = []
+        for i in range(1, 5):
+            while True:
+                choice = input(f"선택지 {i}: ").strip()
+                if not choice:
+                    print("⚠️ 빈 입력입니다. 선택지 내용을 입력해 주세요.")
+                    continue
+                choices.append(choice)
+                break
+                
+        # 3. 정답 번호 입력 받기 (숫자, 1~4 범위, 빈 텍스트 방어)
+        while True:
+            try:
+                answer_str = input("정답 번호 (1-4): ").strip()
+                if not answer_str:
+                    print("⚠️ 빈 입력입니다. 1-4 사이의 숫자를 입력하세요.")
+                    continue
+                answer = int(answer_str)
+                if answer < 1 or answer > 4:
+                    print("⚠️ 범위 오류입니다. 1-4 사이의 숫자를 입력하세요.")
+                    continue
+                break
+            except ValueError:
+                print("⚠️ 잘못된 입력입니다. 문자가 아닌 숫자를 입력해 주세요.")
+                
+        # 4. 입력받은 정보로 새로운 Quiz 객체를 만들어 목록에 추가
+        new_quiz = Quiz(question, choices, answer)
+        self.quizzes.append(new_quiz)
+        print("\n✅ 퀴즈가 성공적으로 추가되었습니다!")
+
     def run(self):
         """게임의 전체 흐름을 제어하는 메인 루프"""
         while True:
@@ -122,7 +165,7 @@ class QuizGame:
                 if choice == 1:
                     print("\n[알림] 퀴즈 풀기 기능은 다음 단계에서 구현합니다!")
                 elif choice == 2:
-                    print("\n[알림] 퀴즈 추가 기능은 다음 단계에서 구현합니다!")
+                    self.add_quiz()
                 elif choice == 3:
                     self.show_quiz_list()
                 elif choice == 4:
