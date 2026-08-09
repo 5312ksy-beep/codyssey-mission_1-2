@@ -145,6 +145,55 @@ class QuizGame:
         self.quizzes.append(new_quiz)
         print("\n✅ 퀴즈가 성공적으로 추가되었습니다!")
 
+    def play_quiz(self):
+        """저장된 퀴즈를 순서대로 풀고 점수를 계산하는 기능"""
+        if not self.quizzes:
+            print("\n⚠️ 등록된 퀴즈가 없습니다. 퀴즈를 먼저 추가해 주세요.")
+            return
+
+        print(f"\n📝 퀴즈를 시작합니다! (총 {len(self.quizzes)}문제)")
+        
+        current_score = 0  # 이번 게임에서 맞춘 정답 개수
+        
+        # 1. 저장된 퀴즈를 하나씩 꺼내서 출제하기
+        for i, quiz in enumerate(self.quizzes, 1):
+            quiz.display(i) # 아까 만든 예쁜 양식으로 문제 출력
+            
+            # 2. 사용자 정답 입력 받기 (예외 처리 꼼꼼하게!)
+            while True:
+                try:
+                    user_input = input("정답 입력: ").strip()
+                    if not user_input:
+                        print("⚠️ 빈 입력입니다. 1-4 사이의 숫자를 입력하세요.")
+                        continue
+                    
+                    user_answer = int(user_input)
+                    if user_answer < 1 or user_answer > 4:
+                        print("⚠️ 범위 오류입니다. 1-4 사이의 숫자를 입력하세요.")
+                        continue
+                    break # 정상적인 숫자가 들어오면 루프 탈출
+                except ValueError:
+                    print("⚠️ 잘못된 입력입니다. 문자가 아닌 숫자를 입력해 주세요.")
+            
+            # 3. 정답 확인 및 점수 올리기
+            if quiz.check_answer(user_answer):
+                print("✅ 정답입니다!\n")
+                current_score += 1
+            else:
+                print(f"❌ 오답입니다. (정답은 {quiz.answer}번)\n")
+        
+        # 4. 최종 점수 계산 (100점 만점 기준 환산)
+        score_percentage = int((current_score / len(self.quizzes)) * 100)
+        
+        print("=" * 40)
+        print(f"🏆 결과: {len(self.quizzes)}문제 중 {current_score}문제 정답! ({score_percentage}점)")
+        
+        # 5. 최고 점수 갱신 확인
+        if score_percentage > self.best_score:
+            print("🎉 새로운 최고 점수입니다!")
+            self.best_score = score_percentage
+        print("=" * 40)    
+
     def run(self):
         """게임의 전체 흐름을 제어하는 메인 루프"""
         while True:
@@ -163,7 +212,7 @@ class QuizGame:
                 
                 # 4. 메뉴 분기 및 범위 이탈 검사
                 if choice == 1:
-                    print("\n[알림] 퀴즈 풀기 기능은 다음 단계에서 구현합니다!")
+                    self.play_quiz()
                 elif choice == 2:
                     self.add_quiz()
                 elif choice == 3:
