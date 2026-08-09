@@ -61,11 +61,10 @@ default_quizzes = [
     )
 ]
 
+--------------------------------------------------------------------------------
 
 import sys # 맨 윗줄에 추가 (종료 처리를 위해 필요)
 import json
-
-# ... (앞서 작성한 Quiz 클래스와 default_quizzes 코드는 그대로 둡니다) ...
 
 class QuizGame:
     def __init__(self, quizzes):
