@@ -61,7 +61,9 @@ codyssey-mission_1-2/
 
 ![최고점수 확인](screenshots/score.png)
 
-**퀴즈추가**
+**퀴즈추가 및 목록 확인**
+
+![퀴즈 추가](screenshots/add_quiz.png)
 
 
 
