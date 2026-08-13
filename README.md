@@ -65,14 +65,10 @@ codyssey-mission_1-2/
 
 ![퀴즈 추가](screenshots/add_quiz.png)
 
-
-
-
-
 ### 7-3. git log --oneline --graph 결과
-<!-- 아래에 git log 실행 스크린샷을 첨부하세요 -->
 
+![Git log](screenshots/graph.png)
 
 ### 7-4. Git clone / pull 실습
-<!-- 아래에 clone과 pull 명령어를 실행한 스크린샷을 첨부하세요 -->
 
+![Git clone / pull 실습](screenshots/clone,pull.png)
