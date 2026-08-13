@@ -27,7 +27,8 @@ class Quiz:
             "answer": self.answer,
             "hint": self.hint
         }
-
+    
+    @classmethod
     def from_dict(cls, data):
         """state.json에서 불러온 데이터를 다시 Quiz 객체로 만들어주는 역할"""
         # 기존 데이터에 힌트가 없을 경우를 대비해 기본값("") 설정
@@ -72,12 +73,18 @@ import sys # 종료 처리를 위해 필요
 import json
 import random           #  랜덤 기능 추가
 from datetime import datetime  #  시간 기록 기능 추가
+import os  # 👈 경로를 다루기 위해 추가
 
 class QuizGame:
     def __init__(self, quizzes):
         self.quizzes = quizzes  # 퀴즈 목록 데이터
         self.best_score = 0     # 최고 점수 초기화
         self.history = []  # 👈 모든 게임 기록을 담을 리스트 추가
+
+    # 💡 현재 파일(main.py)이 있는 폴더 경로를 찾아 state.json과 합칩니다.
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.file_path = os.path.join(base_dir, "state.json")
+
         self.load_data()        # 객체가 생성될 때 가장 먼저 파일을 읽어옴
 
     def display_menu(self):
@@ -112,7 +119,7 @@ class QuizGame:
             "history": self.history  # 👈 히스토리도 같이 저장
         }
         try:
-            with open("state.json", "w", encoding="utf-8") as f:
+            with open(self.file_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=4)
         except Exception as e:
             print(f"\n⚠️ 데이터 저장 중 오류가 발생했습니다: {e}")
@@ -120,7 +127,7 @@ class QuizGame:
     def load_data(self):
         """JSON 파일에서 데이터를 불러오기"""
         try:
-            with open("state.json", "r", encoding="utf-8") as f:
+            with open(self.file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 self.quizzes = [Quiz.from_dict(q) for q in data.get("quizzes", [])]
                 self.best_score = data.get("best_score", 0)
